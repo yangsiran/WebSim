@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tomasulo Algorithm Simulator</title>
+  </head>
+  <body>
+    <h1>Instructions</h1>
+    <div id="root">
+      <form>
+        <template v-for="inst in insts">
+          <select v-model="inst.op">
+            <option>NOP</option>
+            <option>ADD.D</option>
+            <option>DIV.D</option>
+            <option>L.D</option>
+            <option>MULT.D</option>
+            <option>SUB.D</option>
+          </select>
+          <select v-model="inst.dst">
+            <template v-if="inst.op == 'NOP'">
+              <option>Null</option>
+            </template>
+            <template v-else>
+              <option v-for="i in 32">{{ 'F' + i }}</option>
+            </template>
+          </select>
+          <select v-model="inst.src1">
+            <template v-if="inst.op == 'NOP'">
+              <option>Null</option>
+            </template>
+            <template v-if="inst.op == 'L.D'">
+              <option v-for="i in 32">{{ i }}</option>
+            </template>
+            <template v-if="inst.op != 'NOP' && inst.op != 'L.D'">
+              <option v-for="i in 32">{{ 'F' + i }}</option>
+            </template>
+          </select>
+          <select v-model="inst.src2">
+            <template v-if="inst.op == 'NOP'">
+              <option>Null</option>
+            </template>
+            <template v-if="inst.op == 'L.D'">
+              <option v-for="i in 32">{{ 'R' + i }}</option>
+            </template>
+            <template v-if="inst.op != 'NOP' && inst.op != 'L.D'">
+              <option v-for="i in 32">{{ 'F' + i }}</option>
+            </template>
+          </select>
+          <br>
+        </template>
+      </form>
+
+      <button @click.prevent="step">Step</button>
+      <button @click.prevent="step5">Step5</button>
+      {{ clock }}
+
+      <table>
+        <tr>
+          <th>Instruction</th>
+          <th>Issue</th>
+          <th>Exeute</th>
+          <th>Write Back</th>
+        </tr>
+        <tr v-for="(i, inst) in insts">
+          <td>
+            {{ inst.op + ' ' + inst.dst + ', ' + inst.src1 + ', ' + inst.src2 }}
+          </td>
+          <td>{{ inst_stat[i].is }}</td>
+          <td>{{ inst_stat[i].ex }}</td>
+          <td>{{ inst_stat[i].wb }}</td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Busy</th>
+          <th>Address</th>
+          <th>Value</th>
+        </tr>
+        <tr v-for="(i, fu) in load">
+          <td>{{ 'load' + (i + 1) }}</td>
+          <td>{{ fu.busy }}</td>
+          <td>{{ fu.addr }}</td>
+          <td>{{ fu.value }}</td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <th>Time</th>
+          <th>Name</th>
+          <th>Busy</th>
+          <th>Op</th>
+          <th>Vj</th>
+          <th>Vk</th>
+          <th>Qj</th>
+          <th>Qk</th>
+        </tr>
+        <tr v-for="fu in rs">
+          <td>{{ fu.time >= 0 ? fu.time : '' }}</td>
+          <td>{{ fu.name }}</td>
+          <td>{{ fu.busy }}</td>
+          <td>{{ fu.busy == 'Yes' ? insts[fu.op].op : '' }}</td>
+          <td>{{ fu.vj }}</td>
+          <td>{{ fu.vk }}</td>
+          <td>{{ fu.qj }}</td>
+          <td>{{ fu.qk }}</td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <th>Field</th>
+          <td v-for="(i, reg) in regs">{{ 'F' + i }}</td>
+        </tr>
+        <tr>
+          <th>Qi</th>
+          <td v-for="reg in regs">{{ reg.qi }}</td>
+        </tr>
+        <tr>
+          <th>Value</th>
+          <td v-for="reg in regs">{{ reg.value }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <script src="/node_modules/vue/dist/vue.js"></script>
+    <script src="vm.js"></script>
+  </body>
+</html>

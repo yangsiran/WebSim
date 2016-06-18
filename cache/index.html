@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cache Simulator</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="root">
+      <table class="addrFlw">
+        <tr v-for="access in addrFlw">
+          <td>{{ access.type }}</td>
+          <td>{{ access.addr }}</td>
+        </tr>
+      </table>
+
+      <h1>Configuration</h1>
+      <form>
+        <table>
+        <tr><th>ICache Size</th><td><input type="text" v-model="iCSz" number lazy></td></tr>
+        <tr><th>DCache Size</th><td><input type="text" v-model="dCSz" number lazy></td></tr>
+        <tr><th>Block Size</th><td><input type="text" v-model="blkSz" number lazy></td></tr>
+        <tr><th>Associtivity</th><td><input type="text" v-model="assoc" number lazy></td></tr>
+        <tr>
+          <th>Replacement Strategy</th>
+          <td>
+            <select v-model="rpl">
+              <option value="lru">LRU</option>
+              <option value="fifo">FIFO</option>
+              <!-- option value="rand">RAND</option -->
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>Write Strategy</th>
+          <td>
+            <select v-model="wrSty">
+              <option value="wb">Write Black</option>
+              <option value="wt">Write Through</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <th>Write Miss Strategy</th>
+          <td>
+            <select v-model="wrMiss">
+              <option value="alloc">Allocate</option>
+              <option value="notAlloc">Not Allocate</option>
+            </select>
+          </td>
+        </tr>
+        </table>
+      </form>
+      <button @click="step">Step</button>
+
+      <template v-if="access">
+        <h1>Access</h1>
+        <table>
+          <tr><th>Type</th><td>{{ access.type }}</td></tr>
+          <tr><th>Address</th><td>{{ access.addr }}</td></tr>
+          <tr><th>Block Number</th><td>{{ access.blkNum }}</td></tr>
+          <tr><th>Offset</th><td>{{ access.offset }}</td></tr>
+          <tr><th>Index</th><td>{{ access.index }}</td></tr>
+          <tr><th>Hit</th><td>{{ access.hit }}</td></tr>
+        </table>
+      </template>
+
+      <h1>Statistics</h1>
+      <table>
+        <tr>
+          <th>Total Access</th><td>{{ totCnt }}</td>
+          <th>Total Miss</th><td>{{ totMiss }}</td>
+          <th>Total Rate</th><td>{{ totRate }}</td>
+        </tr>
+        <tr>
+        <th>Instruction Access</th><td>{{ instCnt }}</td>
+        <th>Instruction Miss</th><td>{{ instMiss }}</td>
+        <th>Instruction Rate</th><td>{{ instRate }}</td>
+        </tr>
+        <tr>
+          <th>Read Access</th><td>{{ readCnt }}</td>
+          <th>Read Miss</th><td>{{ readMiss }}</td>
+          <th>Read Rate</th><td>{{ readRate }}</td>
+        </tr>
+        <tr>
+          <th>Write Access</th><td>{{ writeCnt }}</td>
+          <th>Write Miss</th><td>{{ writeMiss }}</td>
+          <th>Write Rate</th><td>{{ writeRate }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <script src="/node_modules/vue/dist/vue.js"></script>
+    <script src="vm.js"></script>
+  </body>
+</html>

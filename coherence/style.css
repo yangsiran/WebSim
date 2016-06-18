@@ -1,0 +1,12 @@
+h1 {
+  font-size: 20px;
+}
+
+.clear {
+  clear: both;
+}
+
+.cache, .core {
+  float: left;
+  width: 25%;
+}

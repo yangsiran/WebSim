@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Coherence Protocol Simulator</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="root">
+
+      <form>
+        Cache Size:
+        <input type="text" v-model="nrBlock" number lazy value="8"><br>
+        CPU Number:
+        <input type="text" v-model="nrCpu" number lazy value="2"><br>
+      </form>
+
+      <v-core v-for="core in nrCpu"
+              :core="core"
+              :nr-block="nrBlock">
+      </v-core>
+      <div class="clear"></div>
+
+      <div id="bus">
+        <h1>Bus</h1>
+        {{ (bus.type == 'read' ? 'Rd' : bus.type == 'write' ? 'RdX' : '') + ' ' + bus.addr }}
+      </div>
+
+      <v-cache v-for="core in nrCpu"
+               :core="core"
+               :nr-block="nrBlock">
+      </v-cache>
+
+    </div>
+
+    <script src="/node_modules/vue/dist/vue.js"></script>
+    <script src="vm.js"></script>
+  </body>
+</html>
